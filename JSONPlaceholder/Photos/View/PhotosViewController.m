@@ -39,7 +39,7 @@
 }
 
 - (IBAction)reorderRandomlyButtonTapped:(id)sender {
-    // TODO: Handle items reordering
+    [self.viewModel reoderPhotos];
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource

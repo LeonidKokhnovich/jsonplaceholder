@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 // Swift flatMap analog
 - (NSArray *)flatMap:(id (^)(id obj))block;
 
+- (NSArray *)shuffle;
+
 @end
 
 NS_ASSUME_NONNULL_END

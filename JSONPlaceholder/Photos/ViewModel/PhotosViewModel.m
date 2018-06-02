@@ -126,6 +126,27 @@
     return removedIndexPaths.copy;
 }
 
+- (void)reoderPhotos {
+    NSMutableArray<NSNumber *> *itemIndexes = [NSMutableArray new];
+    for (NSUInteger i = 0; i < self.albumModels.count; i++) {
+        [itemIndexes addObject:[NSNumber numberWithUnsignedInteger:i]];
+    }
+    NSArray<NSNumber *> *shuffledItemIndexes = [itemIndexes shuffle];
+    
+    NSMutableArray<AlbumModel *> *shuffledAlbumModels = [NSMutableArray new];
+    NSMutableArray<PhotoViewModel *> *shuffledPhotoViewModels = [NSMutableArray new];
+    for (NSNumber *index in shuffledItemIndexes) {
+        NSUInteger indexValue = index.unsignedIntegerValue;
+        [shuffledAlbumModels addObject:self.albumModels[indexValue]];
+        [shuffledPhotoViewModels addObject:self.photoViewModels[indexValue]];
+    }
+    
+    self.albumModels = shuffledAlbumModels.copy;
+    self.photoViewModels = shuffledPhotoViewModels.copy;
+    
+    [self.delegate didUpdatePhotos];
+}
+
 #pragma mark - Helpers
 
 - (void)startPhotosDownload {

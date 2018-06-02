@@ -15,7 +15,7 @@
     [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [mutableArray addObject:block(obj)];
     }];
-    return mutableArray;
+    return mutableArray.copy;
 }
 
 - (NSArray *)filter:(BOOL (^)(id obj))block {
@@ -25,7 +25,7 @@
             [mutableArray addObject:obj];
         }
     }];
-    return mutableArray;
+    return mutableArray.copy;
 }
 
 - (NSArray *)flatMap:(id (^)(id obj))block {
@@ -39,7 +39,18 @@
         }
         [mutableArray addObject:_obj];
     }];
-    return mutableArray;
+    return mutableArray.copy;
+}
+
+- (NSArray *)shuffle {
+    NSUInteger count = [self count];
+    NSMutableArray *mutableArray = [self mutableCopy];
+    for (NSUInteger i = 0; i < count - 1; i++) {
+        NSInteger remainingCount = count - i;
+        NSInteger exchangeIndex = i + arc4random_uniform((u_int32_t )remainingCount);
+        [mutableArray exchangeObjectAtIndex:i withObjectAtIndex:exchangeIndex];
+    }
+    return mutableArray.copy;
 }
 
 @end
