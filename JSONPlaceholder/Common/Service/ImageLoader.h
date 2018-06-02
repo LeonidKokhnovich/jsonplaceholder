@@ -7,10 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LoadImageOperation.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-typedef void (^LoadImageCompletion)(UIImage * _Nullable image, NSError * _Nullable error);
 
 @protocol ImageLoaderType
 

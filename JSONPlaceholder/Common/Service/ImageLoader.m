@@ -43,16 +43,7 @@ static ImageLoader *_shared;
 }
 
 - (NSOperation *)loadImage:(NSURL *)url completion:(LoadImageCompletion)completion {
-    LoadImageOperation *operation = [[LoadImageOperation alloc] initWithURL:url];
-    __weak typeof(operation) weakOperation = operation;
-    operation.completionBlock = ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            __strong typeof(operation) strongOperation = weakOperation;
-            if (strongOperation != nil) {
-                completion(strongOperation.image, strongOperation.error);
-            }
-        });
-    };
+    LoadImageOperation *operation = [[LoadImageOperation alloc] initWithURL:url completion:completion];
     [self.operationQueue addOperation:operation];
     return operation;
 }

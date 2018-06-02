@@ -27,12 +27,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 static NSErrorDomain DomainError = @"com.jsonplaceholder.imageloader";
 
-- (instancetype)initWithURL:(NSURL *)url
+- (instancetype)initWithURL:(NSURL *)url completion:(LoadImageCompletion)completion
 {
     self = [super init];
     if (self) {
         _url = url;
         _storageFolderPath = NSTemporaryDirectory();
+        self.completion = completion;
         self.fileManager = NSFileManager.defaultManager;
         self.urlSession = NSURLSession.sharedSession;
     }
@@ -86,6 +87,13 @@ static NSErrorDomain DomainError = @"com.jsonplaceholder.imageloader";
         }
     }];
     [task resume];
+}
+
+- (void)completeOperation {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.completion(self.image, self.error);
+    });
+    [super completeOperation];
 }
 
 #pragma mark - Helpers

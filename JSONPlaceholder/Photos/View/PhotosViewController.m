@@ -10,7 +10,7 @@
 #import "PhotosViewModel.h"
 #import "PhotoCollectionViewCell.h"
 
-@interface PhotosViewController () <PhotosViewModelDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource>
+@interface PhotosViewController () <PhotosViewModelDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, UIScrollViewDelegate>
 
 @property (nonatomic) PhotosViewModel *viewModel;
 
@@ -51,11 +51,25 @@
     return [PhotoCollectionViewCell expectedSize];
 }
 
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+}
+
 #pragma mark - PhotosViewModelDelegate
 
 - (void)didUpdatePhotos {
     NSLog(@"Did update photos: %tu", self.viewModel.photoViewModels.count);
     [self.collectionView reloadData];
+}
+
+- (void)didUpdatePhotoAtIndex:(NSInteger)index {
+    if (index < [self.collectionView numberOfItemsInSection:0]) {
+        [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]]];
+    } else {
+        [self.collectionView reloadData];
+    }
 }
 
 - (void)didUpdatePhotosWithError:(NSError * _Nonnull)error {

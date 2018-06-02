@@ -52,6 +52,13 @@
                 <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
                 <true/>
             </dict>
+            <key>placehold.it</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+            </dict>
         </dict>
     </dict>
 </dict>

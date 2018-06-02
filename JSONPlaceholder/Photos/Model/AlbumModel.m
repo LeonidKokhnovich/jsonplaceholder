@@ -65,4 +65,16 @@ static NSString *AlbumModelCodableKeyThumbnailURL = @"thumbnailUrl";
     }
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    AlbumModel *copy = [[[self class] alloc] init];
+    if (copy) {
+        copy.albumId = self.albumId;
+        copy.identifier = self.identifier;
+        copy.title = self.title;
+        copy.url = self.url;
+        copy.thumbnailURL = self.thumbnailURL;
+    }
+    return copy;
+}
+
 @end

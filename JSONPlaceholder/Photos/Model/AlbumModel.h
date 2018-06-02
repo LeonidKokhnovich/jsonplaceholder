@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AlbumModel : NSObject
+@interface AlbumModel : NSObject <NSCopying>
 
 @property (nonatomic) NSNumber *albumId;
 @property (nonatomic) NSNumber *identifier;

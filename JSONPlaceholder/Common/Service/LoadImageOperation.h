@@ -11,13 +11,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void (^LoadImageCompletion)(UIImage * _Nullable image, NSError * _Nullable error);
+
 @interface LoadImageOperation : AsyncOperation
 
 @property (readonly, nonatomic) NSURL *url;
 @property (readonly, nonatomic, nullable) UIImage *image;
 @property (readonly, nonatomic, nullable) NSError *error;
+@property (copy, nonatomic) LoadImageCompletion completion;
 
-- (instancetype)initWithURL:(NSURL *)url;
+- (instancetype)initWithURL:(NSURL *)url completion:(LoadImageCompletion)completion;
 
 @end
 

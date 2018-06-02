@@ -9,18 +9,24 @@
 #import <Foundation/Foundation.h>
 #import "PhotoViewModel.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol PhotosViewModelDelegate <NSObject>
 
 - (void)didUpdatePhotos;
-- (void)didUpdatePhotosWithError:(NSError * _Nonnull)error;
+- (void)didUpdatePhotoAtIndex:(NSInteger)index;
+- (void)didUpdatePhotosWithError:(NSError *)error;
 
 @end
 
 @interface PhotosViewModel : NSObject
 
-@property (weak, nonatomic) id <PhotosViewModelDelegate> delegate;
-@property (readonly, nonatomic, nonnull) NSArray<PhotoViewModel *> *photoViewModels;
+@property (weak, nonatomic, nullable) id <PhotosViewModelDelegate> delegate;
+@property (readonly, nonatomic) NSArray<PhotoViewModel *> *photoViewModels;
 
 - (void)updatePhotos;
+- (void)didChangeScrollPositionWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes;
 
 @end
+
+NS_ASSUME_NONNULL_END
