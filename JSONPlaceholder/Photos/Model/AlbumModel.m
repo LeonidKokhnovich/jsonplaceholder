@@ -77,4 +77,19 @@ static NSString *AlbumModelCodableKeyThumbnailURL = @"thumbnailUrl";
     return copy;
 }
 
+- (NSUInteger)hash {
+    return self.identifier.hash;
+}
+
+- (BOOL)isEqual:(id)object {
+    if ([super isEqual:object]) {
+        return YES;
+    } else if ([object isKindOfClass:[self class]]) {
+        AlbumModel *otherModel = (AlbumModel *)object;
+        return self.identifier == otherModel.identifier;
+    } else {
+        return NO;
+    }
+}
+
 @end
