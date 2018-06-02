@@ -54,6 +54,11 @@ static NSErrorDomain DomainError = @"com.jsonplaceholder.imageloader";
     }
     
     NSURLSessionDataTask *task = [self.urlSession dataTaskWithURL:self.url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if ([self isCancelled]) {
+            [self completeOperation];
+            return;
+        }
+        
         if (error != nil) {
             self.error = error;
             [self completeOperation];

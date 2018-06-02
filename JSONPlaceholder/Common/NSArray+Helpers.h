@@ -15,6 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 // Swift map analog
 - (NSArray *)map:(id (^)(id obj))block;
 
+// Swift filter analog
+- (NSArray *)filter:(BOOL (^)(id obj))block;
+
 // Swift flatMap analog
 - (NSArray *)flatMap:(id (^)(id obj))block;
 

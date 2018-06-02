@@ -27,7 +27,10 @@
 }
 
 - (IBAction)removeButtonTapped:(id)sender {
-    // TODO: Handle item removal
+    [self.collectionView performBatchUpdates:^ {
+        NSArray<NSIndexPath *> *removedIndexPaths = [self.viewModel removePhotosWithLettersBOrD];
+        [self.collectionView deleteItemsAtIndexPaths:removedIndexPaths];
+    } completion:nil];
 }
 
 - (IBAction)reorderRandomlyButtonTapped:(id)sender {

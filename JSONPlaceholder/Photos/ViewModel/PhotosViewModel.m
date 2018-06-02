@@ -95,6 +95,37 @@
     }];
 }
 
+- (NSArray<NSIndexPath *> *)removePhotosWithLettersBOrD {
+    NSMutableIndexSet *indexesForRemoval = [NSMutableIndexSet new];
+    for (NSUInteger i = 0; i < self.albumModels.count; i++) {
+        AlbumModel *albumModel = self.albumModels[i];
+        if ([albumModel.title containsString:@"b"] || [albumModel.title containsString:@"d"]) {
+            [indexesForRemoval addIndex:i];
+        }
+    }
+    
+    [[self.albumModels objectsAtIndexes:indexesForRemoval] enumerateObjectsUsingBlock:^(AlbumModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSOperation *operation = self.allDownloads[obj];
+        if (operation != nil) {
+            [operation cancel];
+        }
+    }];
+    
+    NSMutableArray<AlbumModel *> *newAlbumModels = self.albumModels.mutableCopy;
+    [newAlbumModels removeObjectsAtIndexes:indexesForRemoval];
+    self.albumModels = newAlbumModels;
+    
+    NSMutableArray<PhotoViewModel *> *newPhotoViewModels = self.photoViewModels.mutableCopy;
+    [newPhotoViewModels removeObjectsAtIndexes:indexesForRemoval];
+    self.photoViewModels = newPhotoViewModels;
+    
+    NSMutableArray<NSIndexPath *> *removedIndexPaths = [NSMutableArray new];
+    [indexesForRemoval enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+        [removedIndexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+    }];
+    return removedIndexPaths.copy;
+}
+
 #pragma mark - Helpers
 
 - (void)startPhotosDownload {

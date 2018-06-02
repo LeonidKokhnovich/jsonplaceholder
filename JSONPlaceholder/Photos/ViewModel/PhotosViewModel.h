@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updatePhotos;
 - (void)didChangeScrollPositionWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes;
 - (void)didFinishScrollWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes;
+- (NSArray<NSIndexPath *> *)removePhotosWithLettersBOrD;
 
 @end
 

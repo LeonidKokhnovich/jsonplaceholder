@@ -18,6 +18,16 @@
     return mutableArray;
 }
 
+- (NSArray *)filter:(BOOL (^)(id obj))block {
+    NSMutableArray *mutableArray = [NSMutableArray new];
+    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if (block(obj) == YES) {
+            [mutableArray addObject:obj];
+        }
+    }];
+    return mutableArray;
+}
+
 - (NSArray *)flatMap:(id (^)(id obj))block {
     NSMutableArray *mutableArray = [NSMutableArray new];
     [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
