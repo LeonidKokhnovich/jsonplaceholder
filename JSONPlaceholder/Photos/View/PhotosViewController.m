@@ -30,7 +30,12 @@
     [self.collectionView performBatchUpdates:^ {
         NSArray<NSIndexPath *> *removedIndexPaths = [self.viewModel removePhotosWithLettersBOrD];
         [self.collectionView deleteItemsAtIndexPaths:removedIndexPaths];
-    } completion:nil];
+    } completion:^(BOOL finished) {
+        if (finished) {
+            // Since items were removed, we need to make sure the scroll position is updated on the view model layer.
+            [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+        }
+    }];
 }
 
 - (IBAction)reorderRandomlyButtonTapped:(id)sender {
