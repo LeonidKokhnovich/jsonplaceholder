@@ -8,6 +8,8 @@
 
 #import "PhotosViewModel.h"
 #import "AlbumServiceProvider.h"
+#import "NSArray+Helpers.h"
+#import "AlbumModel.h"
 
 @interface PhotosViewModel ()
 
@@ -24,8 +26,6 @@
     if (self) {
         self.albumServiceProvider = [AlbumServiceProvider shared];
         self.photoViewModels = [NSArray new];
-        
-        [self updatePhotos];
     }
     return self;
 }
@@ -37,7 +37,16 @@
                 [self.delegate didUpdatePhotosWithError:error];
             });
         } else {
-            // TODO: MAP and update delegate
+            self.photoViewModels = [albumModels map:^id (AlbumModel *model) {
+                PhotoViewModel *viewModel = [PhotoViewModel new];
+                viewModel.title = model.title;
+                viewModel.url = model.url;
+                return viewModel;
+            }];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate didUpdatePhotos];
+            });
         }
     }];
 }

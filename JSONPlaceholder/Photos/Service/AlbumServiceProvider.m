@@ -9,6 +9,7 @@
 #import "AlbumServiceProvider.h"
 #import "HTTPConstants.h"
 #import "AlbumModel.h"
+#import "NSArray+Helpers.h"
 
 static NSErrorDomain AlbumServiceProviderDomainError = @"com.jsonplaceholder.albumserviceprovider";
 static NSString *WebServerAddress = @"http://jsonplaceholder.typicode.com";
@@ -107,20 +108,14 @@ static AlbumServiceProvider *_shared;
         return nil;
     }
     
-    NSMutableArray<AlbumModel *> *albumModels = [NSMutableArray new];
-    [modelsJSON enumerateObjectsUsingBlock:^(id albumModelJSON, NSUInteger idx, BOOL *stop) {
-        if ([albumModelJSON isKindOfClass:[NSDictionary class]]) {
-            AlbumModel *model = [[AlbumModel alloc] initWithJSON:albumModelJSON];
-            if (model != nil) {
-                [albumModels addObject:model];
-            } else {
-                NSLog(@"Failed to create album model from json");
-            }
+    NSArray<AlbumModel *> *albumModels = [modelsJSON flatMap:^id _Nonnull(id  _Nonnull jsonObject) {
+        if ([jsonObject isKindOfClass:[NSDictionary class]]) {
+            return [[AlbumModel alloc] initWithJSON:jsonObject];
         } else {
-            NSLog(@"Failed to represent album JSON as dict");
+            return nil;
         }
     }];
-    return albumModels.copy;
+    return albumModels;
 }
 
 @end
