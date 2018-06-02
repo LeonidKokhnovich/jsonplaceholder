@@ -19,6 +19,17 @@
     return CGSizeMake(100, 100);
 }
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+    CGFloat rotationInRadians = 45 * M_PI / 180;
+    self.titleLabel.layer.affineTransform = CGAffineTransformRotate(CGAffineTransformIdentity, rotationInRadians);
+    
+    self.photoImageView.layer.cornerRadius = 10.0;
+    self.photoImageView.layer.borderWidth = 5.0;
+    self.photoImageView.layer.borderColor = [[UIColor blackColor] CGColor];
+}
+
 - (void)setupWithViewModel:(PhotoViewModel * _Nonnull)viewModel {
     self.photoImageView.image = viewModel.image;
     self.titleLabel.text = viewModel.title;

@@ -80,7 +80,7 @@
     NSMutableSet<AlbumModel *> *itemsToBePrioritized = visibleAlbumModelsSet.mutableCopy;
     [itemsToBePrioritized minusSet:highPriorityAlbumModelsSet];
     [itemsToBePrioritized enumerateObjectsUsingBlock:^(AlbumModel * _Nonnull obj, BOOL * _Nonnull stop) {
-        NSOperation *operation = self.allDownloads[obj];
+        NSOperation *operation = [self.allDownloads objectForKey:obj];
         if (operation != nil) {
             operation.queuePriority = NSOperationQueuePriorityHigh;
             [self.highPriorityDownloads setObject:operation forKey:obj];
