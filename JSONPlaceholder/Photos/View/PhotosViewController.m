@@ -53,7 +53,13 @@
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (decelerate == NO) {
+        [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
 }
 
