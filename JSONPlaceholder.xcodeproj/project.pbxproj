@@ -13,6 +13,10 @@
 		84121BF320C24A81002EF2AF /* PhotosViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121BF220C24A81002EF2AF /* PhotosViewModel.m */; };
 		84121BF620C24C87002EF2AF /* PhotoViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121BF520C24C87002EF2AF /* PhotoViewModel.m */; };
 		84121BFB20C24E6D002EF2AF /* NSArray+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121BFA20C24E6D002EF2AF /* NSArray+Helpers.m */; };
+		84121BFE20C2590A002EF2AF /* PhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121BFD20C2590A002EF2AF /* PhotoCollectionViewCell.m */; };
+		84121C0220C25A1E002EF2AF /* ImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121C0120C25A1E002EF2AF /* ImageLoader.m */; };
+		84121C0920C267BC002EF2AF /* AsyncOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121C0820C267BC002EF2AF /* AsyncOperation.m */; };
+		84121C0F20C26DDC002EF2AF /* LoadImageOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121C0E20C26DDC002EF2AF /* LoadImageOperation.m */; };
 		84F8069520C238F4004AA7B4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F8069420C238F4004AA7B4 /* AppDelegate.m */; };
 		84F8069B20C238F4004AA7B4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84F8069920C238F4004AA7B4 /* Main.storyboard */; };
 		84F8069D20C238F7004AA7B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84F8069C20C238F7004AA7B4 /* Assets.xcassets */; };
@@ -53,6 +57,15 @@
 		84121BF520C24C87002EF2AF /* PhotoViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoViewModel.m; sourceTree = "<group>"; };
 		84121BF920C24E6D002EF2AF /* NSArray+Helpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+Helpers.h"; sourceTree = "<group>"; };
 		84121BFA20C24E6D002EF2AF /* NSArray+Helpers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Helpers.m"; sourceTree = "<group>"; };
+		84121BFC20C2590A002EF2AF /* PhotoCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoCollectionViewCell.h; sourceTree = "<group>"; };
+		84121BFD20C2590A002EF2AF /* PhotoCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoCollectionViewCell.m; sourceTree = "<group>"; };
+		84121C0020C25A1E002EF2AF /* ImageLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageLoader.h; sourceTree = "<group>"; };
+		84121C0120C25A1E002EF2AF /* ImageLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageLoader.m; sourceTree = "<group>"; };
+		84121C0620C25EA8002EF2AF /* URLTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = URLTask.h; sourceTree = "<group>"; };
+		84121C0720C267BC002EF2AF /* AsyncOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AsyncOperation.h; sourceTree = "<group>"; };
+		84121C0820C267BC002EF2AF /* AsyncOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AsyncOperation.m; sourceTree = "<group>"; };
+		84121C0D20C26DDC002EF2AF /* LoadImageOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoadImageOperation.h; sourceTree = "<group>"; };
+		84121C0E20C26DDC002EF2AF /* LoadImageOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoadImageOperation.m; sourceTree = "<group>"; };
 		84F8069020C238F4004AA7B4 /* JSONPlaceholder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JSONPlaceholder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84F8069320C238F4004AA7B4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		84F8069420C238F4004AA7B4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -110,6 +123,8 @@
 			children = (
 				84121BE320C239C3002EF2AF /* PhotosViewController.h */,
 				84121BE420C239C3002EF2AF /* PhotosViewController.m */,
+				84121BFC20C2590A002EF2AF /* PhotoCollectionViewCell.h */,
+				84121BFD20C2590A002EF2AF /* PhotoCollectionViewCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -146,11 +161,26 @@
 		84121BEF20C24215002EF2AF /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				84121BFF20C25A07002EF2AF /* Service */,
 				84121BF020C2422A002EF2AF /* HTTPConstants.h */,
 				84121BF920C24E6D002EF2AF /* NSArray+Helpers.h */,
 				84121BFA20C24E6D002EF2AF /* NSArray+Helpers.m */,
+				84121C0620C25EA8002EF2AF /* URLTask.h */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		84121BFF20C25A07002EF2AF /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				84121C0020C25A1E002EF2AF /* ImageLoader.h */,
+				84121C0120C25A1E002EF2AF /* ImageLoader.m */,
+				84121C0720C267BC002EF2AF /* AsyncOperation.h */,
+				84121C0820C267BC002EF2AF /* AsyncOperation.m */,
+				84121C0D20C26DDC002EF2AF /* LoadImageOperation.h */,
+				84121C0E20C26DDC002EF2AF /* LoadImageOperation.m */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 		84F8068720C238F4004AA7B4 = {
@@ -338,10 +368,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				84121BF620C24C87002EF2AF /* PhotoViewModel.m in Sources */,
+				84121BFE20C2590A002EF2AF /* PhotoCollectionViewCell.m in Sources */,
 				84121BE520C239C3002EF2AF /* PhotosViewController.m in Sources */,
 				84121BFB20C24E6D002EF2AF /* NSArray+Helpers.m in Sources */,
 				84121BEB20C23A0B002EF2AF /* AlbumModel.m in Sources */,
 				84F806A320C238F7004AA7B4 /* main.m in Sources */,
+				84121C0920C267BC002EF2AF /* AsyncOperation.m in Sources */,
+				84121C0F20C26DDC002EF2AF /* LoadImageOperation.m in Sources */,
+				84121C0220C25A1E002EF2AF /* ImageLoader.m in Sources */,
 				84121BF320C24A81002EF2AF /* PhotosViewModel.m in Sources */,
 				84121BEE20C23E43002EF2AF /* AlbumServiceProvider.m in Sources */,
 				84F8069520C238F4004AA7B4 /* AppDelegate.m in Sources */,

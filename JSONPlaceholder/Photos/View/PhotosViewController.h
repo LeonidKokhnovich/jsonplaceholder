@@ -10,4 +10,6 @@
 
 @interface PhotosViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+
 @end

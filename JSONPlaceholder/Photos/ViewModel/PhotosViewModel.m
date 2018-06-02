@@ -10,11 +10,16 @@
 #import "AlbumServiceProvider.h"
 #import "NSArray+Helpers.h"
 #import "AlbumModel.h"
+#import "ImageLoader.h"
 
 @interface PhotosViewModel ()
 
 @property (nonatomic) AlbumServiceProvider *albumServiceProvider;
-@property (nonatomic, nonnull) NSArray<PhotoViewModel *> *photoViewModels;
+@property (nonatomic) ImageLoader *imageLoader;
+@property (nonatomic) NSArray<PhotoViewModel *> *photoViewModels;
+@property (nonatomic) NSArray<AlbumModel *> *albumModels;
+@property (nonatomic) NSMutableDictionary<AlbumModel *, NSOperation *> *lowPriorityDownloads;
+@property (nonatomic) NSMutableDictionary<AlbumModel *, NSOperation *> *highPriorityDownloads;
 
 @end
 
@@ -26,6 +31,9 @@
     if (self) {
         self.albumServiceProvider = [AlbumServiceProvider shared];
         self.photoViewModels = [NSArray new];
+        self.imageLoader = ImageLoader.shared;
+        self.lowPriorityDownloads = [NSMutableDictionary new];
+        self.highPriorityDownloads = [NSMutableDictionary new];
     }
     return self;
 }
@@ -37,10 +45,10 @@
                 [self.delegate didUpdatePhotosWithError:error];
             });
         } else {
+            self.albumModels = albumModels;
             self.photoViewModels = [albumModels map:^id (AlbumModel *model) {
                 PhotoViewModel *viewModel = [PhotoViewModel new];
                 viewModel.title = model.title;
-                viewModel.url = model.url;
                 return viewModel;
             }];
             

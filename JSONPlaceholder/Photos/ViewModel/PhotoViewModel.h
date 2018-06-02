@@ -6,11 +6,11 @@
 //  Copyright © 2018 LeonidKokhnovych. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface PhotoViewModel : NSObject
 
-@property (nonatomic) NSString *title;
-@property (nonatomic) NSURL *url;
+@property (nonatomic, nonnull) NSString *title;
+@property (nonatomic, nullable) UIImage *image;
 
 @end

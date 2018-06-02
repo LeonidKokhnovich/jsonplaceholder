@@ -10,18 +10,10 @@
 #import "HTTPConstants.h"
 #import "AlbumModel.h"
 #import "NSArray+Helpers.h"
+#import "URLTask.h"
 
-static NSErrorDomain AlbumServiceProviderDomainError = @"com.jsonplaceholder.albumserviceprovider";
 static NSString *WebServerAddress = @"http://jsonplaceholder.typicode.com";
 static NSString *WebServerEndpointPhotos = @"photos";
-
-typedef NS_ENUM(NSInteger, AlbumServiceProviderErrorCode) {
-    AlbumServiceProviderErrorCodeInvalidURL,
-    AlbumServiceProviderErrorCodeInvalidResponse,
-    AlbumServiceProviderErrorCodeRequestFailed,
-    AlbumServiceProviderErrorCodeInvalidData,
-    AlbumServiceProviderErrorCodeUnableToParse
-};
 
 @interface AlbumServiceProvider ()
 
@@ -31,6 +23,7 @@ typedef NS_ENUM(NSInteger, AlbumServiceProviderErrorCode) {
 
 @implementation AlbumServiceProvider
 
+static NSErrorDomain DomainError = @"com.jsonplaceholder.albumserviceprovider";
 static AlbumServiceProvider *_shared;
 
 + (instancetype)shared
@@ -56,7 +49,7 @@ static AlbumServiceProvider *_shared;
 - (void)fetchAlbumsWithCompletion:(void (^ _Nonnull)(NSArray<AlbumModel *> * _Nullable, NSError * _Nullable))completion {
     NSURL *url = [self makeURLForAlbums];
     if (url == nil) {
-        NSError *error = [NSError errorWithDomain:AlbumServiceProviderDomainError code:AlbumServiceProviderErrorCodeInvalidURL userInfo:nil];
+        NSError *error = [NSError errorWithDomain:DomainError code:URLTaskErrorCodeInvalidURL userInfo:nil];
         completion(nil, error);
         return;
     }
@@ -65,19 +58,19 @@ static AlbumServiceProvider *_shared;
         if (error != nil) {
             completion(nil, error);
         } else if (response == nil || [response isKindOfClass:[NSHTTPURLResponse class]] == NO) {
-            NSError *error = [NSError errorWithDomain:AlbumServiceProviderDomainError code:AlbumServiceProviderErrorCodeInvalidResponse userInfo:nil];
+            NSError *error = [NSError errorWithDomain:DomainError code:URLTaskErrorCodeInvalidResponse userInfo:nil];
             completion(nil, error);
         } else {
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
             
             if (httpResponse.statusCode != HTTPStatusCodeSuccess) {
-                NSError *error = [NSError errorWithDomain:AlbumServiceProviderDomainError code:AlbumServiceProviderErrorCodeRequestFailed userInfo:nil];
+                NSError *error = [NSError errorWithDomain:DomainError code:URLTaskErrorCodeRequestFailed userInfo:nil];
                 completion(nil, error);
                 return;
             }
             
             if (data == nil) {
-                NSError *error = [NSError errorWithDomain:AlbumServiceProviderDomainError code:AlbumServiceProviderErrorCodeInvalidData userInfo:nil];
+                NSError *error = [NSError errorWithDomain:DomainError code:URLTaskErrorCodeInvalidData userInfo:nil];
                 completion(nil, error);
                 return;
             }
@@ -86,7 +79,7 @@ static AlbumServiceProvider *_shared;
             if (albumModels != nil) {
                 completion(albumModels, nil);
             } else {
-                NSError *error = [NSError errorWithDomain:AlbumServiceProviderDomainError code:AlbumServiceProviderErrorCodeUnableToParse userInfo:nil];
+                NSError *error = [NSError errorWithDomain:DomainError code:URLTaskErrorCodeUnableToParse userInfo:nil];
                 completion(nil, error);
             }
         }
