@@ -20,6 +20,7 @@
 @property (nonatomic) NSArray<AlbumModel *> *albumModels;
 @property (nonatomic) NSMutableDictionary<AlbumModel *, NSOperation *> *allDownloads;
 @property (nonatomic) NSMutableDictionary<AlbumModel *, NSOperation *> *highPriorityDownloads;
+@property (atomic) NSArray<AlbumModel *> *visibleAlbums;
 
 @end
 
@@ -62,6 +63,12 @@
 }
 
 - (void)didChangeScrollPositionWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes {
+    self.visibleAlbums = [indexes map:^id _Nonnull(NSIndexPath * _Nonnull obj) {
+        return self.albumModels[obj.row];
+    }];
+}
+
+- (void)didFinishScrollWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes {
     NSArray<AlbumModel *> *visibleAlbumModels = [indexes map:^id _Nonnull(NSIndexPath *indexPath) {
         return self.albumModels[indexPath.row];
     }];
@@ -99,7 +106,12 @@
         
         NSOperation *operation = [self.imageLoader loadImage:albumModel.url completion:^(UIImage * _Nullable image, NSError * _Nullable error) {
             viewModel.image = image;
-            [weakSelf.delegate didUpdatePhotoAtIndex:i];
+            
+            if ([weakSelf.visibleAlbums containsObject:albumModel]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.delegate didUpdatePhotoAtIndex:i];
+                });
+            }
         }];
         operation.completionBlock = ^{
             dispatch_async(dispatch_get_main_queue(), ^{

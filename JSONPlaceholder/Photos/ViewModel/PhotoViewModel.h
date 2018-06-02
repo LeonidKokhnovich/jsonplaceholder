@@ -11,6 +11,6 @@
 @interface PhotoViewModel : NSObject
 
 @property (nonatomic, nonnull) NSString *title;
-@property (nonatomic, nullable) UIImage *image;
+@property (atomic, nullable) UIImage *image;
 
 @end

@@ -53,14 +53,18 @@
 
 #pragma mark - UIScrollViewDelegate
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+}
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (decelerate == NO) {
-        [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+        [self.viewModel didFinishScrollWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+    [self.viewModel didFinishScrollWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
 }
 
 #pragma mark - PhotosViewModelDelegate
@@ -68,6 +72,7 @@
 - (void)didUpdatePhotos {
     NSLog(@"Did update photos: %tu", self.viewModel.photoViewModels.count);
     [self.collectionView reloadData];
+    [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
 }
 
 - (void)didUpdatePhotoAtIndex:(NSInteger)index {
