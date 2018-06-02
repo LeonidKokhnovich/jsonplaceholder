@@ -27,11 +27,11 @@
 }
 
 - (IBAction)removeButtonTapped:(id)sender {
-    
+    // TODO: Handle item removal
 }
 
 - (IBAction)reorderRandomlyButtonTapped:(id)sender {
-
+    // TODO: Handle items reordering
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource
@@ -85,6 +85,7 @@
 
 - (void)didUpdatePhotosWithError:(NSError * _Nonnull)error {
     NSLog(@"Did update photos with error %@", error);
+    // TODO: Display alert with error
 }
 
 @end
