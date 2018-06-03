@@ -59,11 +59,15 @@
     return [PhotoCollectionViewCell expectedSize];
 }
 
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self.viewModel updateWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    [self.viewModel updateWithVisibleIndexes:collectionView.indexPathsForVisibleItems];
 }
+
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    [self.viewModel updateWithVisibleIndexes:collectionView.indexPathsForVisibleItems];
+}
+
+#pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (decelerate == NO) {
@@ -80,7 +84,6 @@
 - (void)didUpdatePhotos {
     NSLog(@"Did update photos: %tu", self.viewModel.photoViewModels.count);
     [self.collectionView reloadData];
-    [self.viewModel updateWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
 }
 
 - (void)didUpdatePhotoAtIndex:(NSInteger)index {

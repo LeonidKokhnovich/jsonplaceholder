@@ -67,30 +67,7 @@
 }
 
 - (void)handleScrollFinished {
-    NSArray<AlbumModel *> *visibleAlbumModels = [self.visibleIndexPaths map:^id _Nonnull(NSIndexPath *indexPath) {
-        return self.albumModels[indexPath.row];
-    }];
-    NSSet<AlbumModel *> *visibleAlbumModelsSet = [NSSet setWithArray:visibleAlbumModels];
-    NSSet<AlbumModel *> *highPriorityAlbumModelsSet = [NSSet setWithArray:self.highPriorityDownloads.allKeys];
-    
-    NSMutableSet<AlbumModel *> *itemsToBeDeprioritized = highPriorityAlbumModelsSet.mutableCopy;
-    [itemsToBeDeprioritized minusSet:visibleAlbumModelsSet];
-    [self.highPriorityDownloads enumerateKeysAndObjectsUsingBlock:^(AlbumModel * _Nonnull key, NSOperation * _Nonnull obj, BOOL * _Nonnull stop) {
-        if ([itemsToBeDeprioritized containsObject:key]) {
-            obj.queuePriority = NSOperationQueuePriorityNormal;
-        }
-    }];
-    [self.highPriorityDownloads removeObjectsForKeys:itemsToBeDeprioritized.allObjects];
-    
-    NSMutableSet<AlbumModel *> *itemsToBePrioritized = visibleAlbumModelsSet.mutableCopy;
-    [itemsToBePrioritized minusSet:highPriorityAlbumModelsSet];
-    [itemsToBePrioritized enumerateObjectsUsingBlock:^(AlbumModel * _Nonnull obj, BOOL * _Nonnull stop) {
-        NSOperation *operation = [self.allDownloads objectForKey:obj];
-        if (operation != nil) {
-            operation.queuePriority = NSOperationQueuePriorityHigh;
-            [self.highPriorityDownloads setObject:operation forKey:obj];
-        }
-    }];
+    [self updatePhotosDownloadPriorities];
 }
 
 - (NSArray<NSIndexPath *> *)removePhotosWithLettersBOrD {
@@ -117,6 +94,8 @@
     [newPhotoViewModels removeObjectsAtIndexes:indexesForRemoval];
     self.photoViewModels = newPhotoViewModels.copy;
     
+    [self updatePhotosDownloadPriorities];
+    
     NSMutableArray<NSIndexPath *> *removedIndexPaths = [NSMutableArray new];
     [indexesForRemoval enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
         [removedIndexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
@@ -131,7 +110,7 @@
     }
     NSArray<NSNumber *> *shuffledItemIndexes = [itemIndexes shuffle];
     
-    NSMutableArray<AlbumModel *> *shuffledAlbumModels = [NSMutableArray new];
+    NSMutableOrderedSet<AlbumModel *> *shuffledAlbumModels = [NSMutableOrderedSet new];
     NSMutableArray<PhotoViewModel *> *shuffledPhotoViewModels = [NSMutableArray new];
     for (NSNumber *index in shuffledItemIndexes) {
         NSUInteger indexValue = index.unsignedIntegerValue;
@@ -142,6 +121,7 @@
     self.albumModels = shuffledAlbumModels.copy;
     self.photoViewModels = shuffledPhotoViewModels.copy;
     
+    [self updatePhotosDownloadPriorities];
     [self.delegate didUpdatePhotos];
 }
 
@@ -155,24 +135,9 @@
         PhotoViewModel *viewModel = self.photoViewModels[i];
         
         NSOperation *operation = [self.imageLoader loadImage:albumModel.url completion:^(UIImage * _Nullable image, NSError * _Nullable error) {
-            if ([weakSelf.albumModels containsObject:albumModel] == NO) {
-                return;
-            }
-            
-            viewModel.image = image;
-            
-            __block BOOL isItemVisible = NO;
-            NSUInteger itemIndex = [weakSelf.albumModels indexOfObject:albumModel];
-            [self.visibleIndexPaths enumerateObjectsUsingBlock:^(NSIndexPath * _Nonnull indexPath, NSUInteger idx, BOOL * _Nonnull stop) {
-                if (indexPath.row == itemIndex) {
-                    isItemVisible = YES;
-                    *stop = YES;
-                }
-            }];
-            if (isItemVisible) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [weakSelf.delegate didUpdatePhotoAtIndex:i];
-                });
+            if ([weakSelf.albumModels containsObject:albumModel]) {
+                viewModel.image = image;
+                [weakSelf indicateItemWasUpdatedIfVisibleForAlbumModel:albumModel];
             }
         }];
         operation.completionBlock = ^{
@@ -183,6 +148,49 @@
         };
         [self.allDownloads setObject:operation forKey:albumModel];
     }
+}
+
+- (void)indicateItemWasUpdatedIfVisibleForAlbumModel:(AlbumModel *)albumModel {
+    __block BOOL isItemVisible = NO;
+    NSUInteger itemIndex = [self.albumModels indexOfObject:albumModel];
+    [self.visibleIndexPaths enumerateObjectsUsingBlock:^(NSIndexPath * _Nonnull indexPath, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (indexPath.row == itemIndex) {
+            isItemVisible = YES;
+            *stop = YES;
+        }
+    }];
+    if (isItemVisible) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate didUpdatePhotoAtIndex:itemIndex];
+        });
+    }
+}
+
+- (void)updatePhotosDownloadPriorities {
+    NSArray<AlbumModel *> *visibleAlbumModels = [self.visibleIndexPaths map:^id _Nonnull(NSIndexPath *indexPath) {
+        return self.albumModels[indexPath.row];
+    }];
+    NSSet<AlbumModel *> *visibleAlbumModelsSet = [NSSet setWithArray:visibleAlbumModels];
+    NSSet<AlbumModel *> *highPriorityAlbumModelsSet = [NSSet setWithArray:self.highPriorityDownloads.allKeys];
+    
+    NSMutableSet<AlbumModel *> *itemsToBeDeprioritized = highPriorityAlbumModelsSet.mutableCopy;
+    [itemsToBeDeprioritized minusSet:visibleAlbumModelsSet];
+    [self.highPriorityDownloads enumerateKeysAndObjectsUsingBlock:^(AlbumModel * _Nonnull key, NSOperation * _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([itemsToBeDeprioritized containsObject:key]) {
+            obj.queuePriority = NSOperationQueuePriorityNormal;
+        }
+    }];
+    [self.highPriorityDownloads removeObjectsForKeys:itemsToBeDeprioritized.allObjects];
+    
+    NSMutableSet<AlbumModel *> *itemsToBePrioritized = visibleAlbumModelsSet.mutableCopy;
+    [itemsToBePrioritized minusSet:highPriorityAlbumModelsSet];
+    [itemsToBePrioritized enumerateObjectsUsingBlock:^(AlbumModel * _Nonnull obj, BOOL * _Nonnull stop) {
+        NSOperation *operation = [self.allDownloads objectForKey:obj];
+        if (operation != nil) {
+            operation.queuePriority = NSOperationQueuePriorityHigh;
+            [self.highPriorityDownloads setObject:operation forKey:obj];
+        }
+    }];
 }
 
 - (void)cancelLastUpdate {
