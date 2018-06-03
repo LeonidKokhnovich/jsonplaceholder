@@ -88,6 +88,7 @@
 }
 
 - (void)didUpdatePhotoAtIndex:(NSInteger)index {
+    NSLog(@"Did update photo at index: %zd", index);
     if (index < [self.collectionView numberOfItemsInSection:0]) {
         [self.collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]]];
     } else {
