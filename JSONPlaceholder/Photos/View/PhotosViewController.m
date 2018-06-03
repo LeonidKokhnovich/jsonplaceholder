@@ -57,7 +57,7 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [PhotoCollectionViewCell expectedSize];
+    return [PhotoCollectionViewCell estimatedSize];
 }
 
 #pragma mark - UIScrollViewDelegate

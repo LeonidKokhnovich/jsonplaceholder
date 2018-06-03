@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
 
 + (NSString *)reuseIdentifier;
-+ (CGSize)expectedSize;
++ (CGSize)estimatedSize;
 - (void)setupWithViewModel:(PhotoViewModel *)viewModel;
 
 @end

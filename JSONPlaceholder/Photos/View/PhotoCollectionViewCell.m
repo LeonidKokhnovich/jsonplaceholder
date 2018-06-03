@@ -15,7 +15,7 @@
     return NSStringFromClass([PhotoCollectionViewCell class]);
 }
 
-+ (CGSize)expectedSize {
++ (CGSize)estimatedSize {
     return CGSizeMake(100, 100);
 }
 
