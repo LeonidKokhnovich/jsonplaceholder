@@ -66,8 +66,31 @@
     self.visibleIndexPaths = indexes;
 }
 
-- (void)handleScrollFinished {
-    [self updatePhotosDownloadPriorities];
+- (void)updatePhotosDownloadPriorities {
+    NSArray<AlbumModel *> *visibleAlbumModels = [self.visibleIndexPaths map:^id _Nonnull(NSIndexPath *indexPath) {
+        return self.albumModels[indexPath.row];
+    }];
+    NSSet<AlbumModel *> *visibleAlbumModelsSet = [NSSet setWithArray:visibleAlbumModels];
+    NSSet<AlbumModel *> *highPriorityAlbumModelsSet = [NSSet setWithArray:self.highPriorityDownloads.allKeys];
+    
+    NSMutableSet<AlbumModel *> *itemsToBeDeprioritized = highPriorityAlbumModelsSet.mutableCopy;
+    [itemsToBeDeprioritized minusSet:visibleAlbumModelsSet];
+    [self.highPriorityDownloads enumerateKeysAndObjectsUsingBlock:^(AlbumModel * _Nonnull key, NSOperation * _Nonnull obj, BOOL * _Nonnull stop) {
+        if ([itemsToBeDeprioritized containsObject:key]) {
+            obj.queuePriority = NSOperationQueuePriorityNormal;
+        }
+    }];
+    [self.highPriorityDownloads removeObjectsForKeys:itemsToBeDeprioritized.allObjects];
+    
+    NSMutableSet<AlbumModel *> *itemsToBePrioritized = visibleAlbumModelsSet.mutableCopy;
+    [itemsToBePrioritized minusSet:highPriorityAlbumModelsSet];
+    [itemsToBePrioritized enumerateObjectsUsingBlock:^(AlbumModel * _Nonnull obj, BOOL * _Nonnull stop) {
+        NSOperation *operation = [self.allDownloads objectForKey:obj];
+        if (operation != nil) {
+            operation.queuePriority = NSOperationQueuePriorityHigh;
+            [self.highPriorityDownloads setObject:operation forKey:obj];
+        }
+    }];
 }
 
 - (NSArray<NSIndexPath *> *)removePhotosWithLettersBOrD {
@@ -93,8 +116,6 @@
     NSMutableArray<PhotoViewModel *> *newPhotoViewModels = self.photoViewModels.mutableCopy;
     [newPhotoViewModels removeObjectsAtIndexes:indexesForRemoval];
     self.photoViewModels = newPhotoViewModels.copy;
-    
-    [self updatePhotosDownloadPriorities];
     
     NSMutableArray<NSIndexPath *> *removedIndexPaths = [NSMutableArray new];
     [indexesForRemoval enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
@@ -164,33 +185,6 @@
             [self.delegate didUpdatePhotoAtIndex:itemIndex];
         });
     }
-}
-
-- (void)updatePhotosDownloadPriorities {
-    NSArray<AlbumModel *> *visibleAlbumModels = [self.visibleIndexPaths map:^id _Nonnull(NSIndexPath *indexPath) {
-        return self.albumModels[indexPath.row];
-    }];
-    NSSet<AlbumModel *> *visibleAlbumModelsSet = [NSSet setWithArray:visibleAlbumModels];
-    NSSet<AlbumModel *> *highPriorityAlbumModelsSet = [NSSet setWithArray:self.highPriorityDownloads.allKeys];
-    
-    NSMutableSet<AlbumModel *> *itemsToBeDeprioritized = highPriorityAlbumModelsSet.mutableCopy;
-    [itemsToBeDeprioritized minusSet:visibleAlbumModelsSet];
-    [self.highPriorityDownloads enumerateKeysAndObjectsUsingBlock:^(AlbumModel * _Nonnull key, NSOperation * _Nonnull obj, BOOL * _Nonnull stop) {
-        if ([itemsToBeDeprioritized containsObject:key]) {
-            obj.queuePriority = NSOperationQueuePriorityNormal;
-        }
-    }];
-    [self.highPriorityDownloads removeObjectsForKeys:itemsToBeDeprioritized.allObjects];
-    
-    NSMutableSet<AlbumModel *> *itemsToBePrioritized = visibleAlbumModelsSet.mutableCopy;
-    [itemsToBePrioritized minusSet:highPriorityAlbumModelsSet];
-    [itemsToBePrioritized enumerateObjectsUsingBlock:^(AlbumModel * _Nonnull obj, BOOL * _Nonnull stop) {
-        NSOperation *operation = [self.allDownloads objectForKey:obj];
-        if (operation != nil) {
-            operation.queuePriority = NSOperationQueuePriorityHigh;
-            [self.highPriorityDownloads setObject:operation forKey:obj];
-        }
-    }];
 }
 
 - (void)cancelLastUpdate {

@@ -34,6 +34,7 @@
         if (finished) {
             // Since items were removed, we need to make sure the scroll position is updated on the view model layer.
             [self.viewModel updateWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+            [self.viewModel updatePhotosDownloadPriorities];
         }
     }];
 }
@@ -71,12 +72,12 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (decelerate == NO) {
-        [self.viewModel handleScrollFinished];
+        [self.viewModel updatePhotosDownloadPriorities];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [self.viewModel handleScrollFinished];
+    [self.viewModel updatePhotosDownloadPriorities];
 }
 
 #pragma mark - PhotosViewModelDelegate
