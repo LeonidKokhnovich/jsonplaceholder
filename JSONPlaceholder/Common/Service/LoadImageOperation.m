@@ -9,6 +9,7 @@
 #import "LoadImageOperation.h"
 #import "HTTPConstants.h"
 #import "URLTask.h"
+#import "UIImage+Helpers.h"
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -82,7 +83,7 @@ static NSErrorDomain DomainError = @"com.jsonplaceholder.imageloader";
             
             UIImage *image = [UIImage imageWithData:data];
             if (image != nil) {
-                self.image = image;
+                self.image = [image preloadedImage];
                 [data writeToURL:localImageFileURL atomically:YES];
                 [self completeOperation];
             } else {

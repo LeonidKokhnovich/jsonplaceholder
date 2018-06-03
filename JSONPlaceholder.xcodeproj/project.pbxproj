@@ -17,6 +17,7 @@
 		84121C0220C25A1E002EF2AF /* ImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121C0120C25A1E002EF2AF /* ImageLoader.m */; };
 		84121C0920C267BC002EF2AF /* AsyncOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121C0820C267BC002EF2AF /* AsyncOperation.m */; };
 		84121C0F20C26DDC002EF2AF /* LoadImageOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121C0E20C26DDC002EF2AF /* LoadImageOperation.m */; };
+		84121C1220C3C784002EF2AF /* UIImage+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 84121C1120C3C784002EF2AF /* UIImage+Helpers.m */; };
 		84F8069520C238F4004AA7B4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F8069420C238F4004AA7B4 /* AppDelegate.m */; };
 		84F8069B20C238F4004AA7B4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84F8069920C238F4004AA7B4 /* Main.storyboard */; };
 		84F8069D20C238F7004AA7B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84F8069C20C238F7004AA7B4 /* Assets.xcassets */; };
@@ -66,6 +67,8 @@
 		84121C0820C267BC002EF2AF /* AsyncOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AsyncOperation.m; sourceTree = "<group>"; };
 		84121C0D20C26DDC002EF2AF /* LoadImageOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoadImageOperation.h; sourceTree = "<group>"; };
 		84121C0E20C26DDC002EF2AF /* LoadImageOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoadImageOperation.m; sourceTree = "<group>"; };
+		84121C1020C3C784002EF2AF /* UIImage+Helpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+Helpers.h"; sourceTree = "<group>"; };
+		84121C1120C3C784002EF2AF /* UIImage+Helpers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Helpers.m"; sourceTree = "<group>"; };
 		84F8069020C238F4004AA7B4 /* JSONPlaceholder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JSONPlaceholder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84F8069320C238F4004AA7B4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		84F8069420C238F4004AA7B4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -166,6 +169,8 @@
 				84121BF920C24E6D002EF2AF /* NSArray+Helpers.h */,
 				84121BFA20C24E6D002EF2AF /* NSArray+Helpers.m */,
 				84121C0620C25EA8002EF2AF /* URLTask.h */,
+				84121C1020C3C784002EF2AF /* UIImage+Helpers.h */,
+				84121C1120C3C784002EF2AF /* UIImage+Helpers.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -377,6 +382,7 @@
 				84121C0F20C26DDC002EF2AF /* LoadImageOperation.m in Sources */,
 				84121C0220C25A1E002EF2AF /* ImageLoader.m in Sources */,
 				84121BF320C24A81002EF2AF /* PhotosViewModel.m in Sources */,
+				84121C1220C3C784002EF2AF /* UIImage+Helpers.m in Sources */,
 				84121BEE20C23E43002EF2AF /* AlbumServiceProvider.m in Sources */,
 				84F8069520C238F4004AA7B4 /* AppDelegate.m in Sources */,
 			);
