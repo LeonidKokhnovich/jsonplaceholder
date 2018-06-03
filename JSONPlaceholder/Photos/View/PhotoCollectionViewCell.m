@@ -25,9 +25,20 @@
     CGFloat rotationInRadians = 45 * M_PI / 180;
     self.titleLabel.layer.affineTransform = CGAffineTransformRotate(CGAffineTransformIdentity, rotationInRadians);
     
-    self.photoImageView.layer.cornerRadius = 10.0;
+    CGFloat cornerRadius = 10.0;
+    self.photoImageView.layer.cornerRadius = cornerRadius;
     self.photoImageView.layer.borderWidth = 5.0;
     self.photoImageView.layer.borderColor = [[UIColor blackColor] CGColor];
+    
+    CAShapeLayer *shadowLayer = [[CAShapeLayer alloc] init];
+    shadowLayer.path = [[UIBezierPath bezierPathWithRoundedRect:self.photoImageView.frame cornerRadius:cornerRadius] CGPath];
+    shadowLayer.fillColor = [[UIColor whiteColor] CGColor];
+    shadowLayer.shadowColor = [[UIColor grayColor] CGColor];
+    shadowLayer.shadowPath = shadowLayer.path;
+    shadowLayer.shadowOffset = CGSizeMake(5.0, 5.0);
+    shadowLayer.shadowOpacity = 1.0;
+    shadowLayer.shadowRadius = 2;
+    [self.contentView.layer insertSublayer:shadowLayer atIndex:0];
 }
 
 - (void)setupWithViewModel:(PhotoViewModel * _Nonnull)viewModel {
