@@ -109,13 +109,13 @@
         }
     }];
     
-    NSMutableArray<AlbumModel *> *newAlbumModels = self.albumModels.mutableCopy;
+    NSMutableOrderedSet<AlbumModel *> *newAlbumModels = self.albumModels.mutableCopy;
     [newAlbumModels removeObjectsAtIndexes:indexesForRemoval];
-    self.albumModels = [NSOrderedSet orderedSetWithArray:newAlbumModels];
+    self.albumModels = newAlbumModels.copy;
     
     NSMutableArray<PhotoViewModel *> *newPhotoViewModels = self.photoViewModels.mutableCopy;
     [newPhotoViewModels removeObjectsAtIndexes:indexesForRemoval];
-    self.photoViewModels = newPhotoViewModels;
+    self.photoViewModels = newPhotoViewModels.copy;
     
     NSMutableArray<NSIndexPath *> *removedIndexPaths = [NSMutableArray new];
     [indexesForRemoval enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
