@@ -33,7 +33,7 @@
     } completion:^(BOOL finished) {
         if (finished) {
             // Since items were removed, we need to make sure the scroll position is updated on the view model layer.
-            [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+            [self.viewModel updateWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
         }
     }];
 }
@@ -62,17 +62,17 @@
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+    [self.viewModel updateWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (decelerate == NO) {
-        [self.viewModel didFinishScrollWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+        [self.viewModel handleScrollFinished];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [self.viewModel didFinishScrollWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+    [self.viewModel handleScrollFinished];
 }
 
 #pragma mark - PhotosViewModelDelegate
@@ -80,7 +80,7 @@
 - (void)didUpdatePhotos {
     NSLog(@"Did update photos: %tu", self.viewModel.photoViewModels.count);
     [self.collectionView reloadData];
-    [self.viewModel didChangeScrollPositionWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
+    [self.viewModel updateWithVisibleIndexes:self.collectionView.indexPathsForVisibleItems];
 }
 
 - (void)didUpdatePhotoAtIndex:(NSInteger)index {

@@ -17,10 +17,10 @@
 @property (nonatomic) AlbumServiceProvider *albumServiceProvider;
 @property (nonatomic) ImageLoader *imageLoader;
 @property (nonatomic) NSArray<PhotoViewModel *> *photoViewModels;
-@property (nonatomic) NSArray<AlbumModel *> *albumModels;
+@property (nonatomic) NSOrderedSet<AlbumModel *> *albumModels;
 @property (nonatomic) NSMutableDictionary<AlbumModel *, NSOperation *> *allDownloads;
 @property (nonatomic) NSMutableDictionary<AlbumModel *, NSOperation *> *highPriorityDownloads;
-@property (atomic) NSArray<AlbumModel *> *visibleAlbums;
+@property (atomic) NSArray<NSIndexPath *> *visibleIndexPaths;
 
 @end
 
@@ -47,7 +47,7 @@
                 [self.delegate didUpdatePhotosWithError:error];
             });
         } else {
-            self.albumModels = albumModels;
+            self.albumModels = [NSOrderedSet orderedSetWithArray:albumModels];
             self.photoViewModels = [albumModels map:^id (AlbumModel *model) {
                 PhotoViewModel *viewModel = [PhotoViewModel new];
                 viewModel.title = model.title;
@@ -62,14 +62,12 @@
     }];
 }
 
-- (void)didChangeScrollPositionWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes {
-    self.visibleAlbums = [indexes map:^id _Nonnull(NSIndexPath * _Nonnull obj) {
-        return self.albumModels[obj.row];
-    }];
+- (void)updateWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes {
+    self.visibleIndexPaths = indexes;
 }
 
-- (void)didFinishScrollWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes {
-    NSArray<AlbumModel *> *visibleAlbumModels = [indexes map:^id _Nonnull(NSIndexPath *indexPath) {
+- (void)handleScrollFinished {
+    NSArray<AlbumModel *> *visibleAlbumModels = [self.visibleIndexPaths map:^id _Nonnull(NSIndexPath *indexPath) {
         return self.albumModels[indexPath.row];
     }];
     NSSet<AlbumModel *> *visibleAlbumModelsSet = [NSSet setWithArray:visibleAlbumModels];
@@ -113,7 +111,7 @@
     
     NSMutableArray<AlbumModel *> *newAlbumModels = self.albumModels.mutableCopy;
     [newAlbumModels removeObjectsAtIndexes:indexesForRemoval];
-    self.albumModels = newAlbumModels;
+    self.albumModels = [NSOrderedSet orderedSetWithArray:newAlbumModels];
     
     NSMutableArray<PhotoViewModel *> *newPhotoViewModels = self.photoViewModels.mutableCopy;
     [newPhotoViewModels removeObjectsAtIndexes:indexesForRemoval];
@@ -157,9 +155,21 @@
         PhotoViewModel *viewModel = self.photoViewModels[i];
         
         NSOperation *operation = [self.imageLoader loadImage:albumModel.url completion:^(UIImage * _Nullable image, NSError * _Nullable error) {
+            if ([weakSelf.albumModels containsObject:albumModel] == NO) {
+                return;
+            }
+            
             viewModel.image = image;
             
-            if ([weakSelf.visibleAlbums containsObject:albumModel]) {
+            __block BOOL isItemVisible = NO;
+            NSUInteger itemIndex = [weakSelf.albumModels indexOfObject:albumModel];
+            [self.visibleIndexPaths enumerateObjectsUsingBlock:^(NSIndexPath * _Nonnull indexPath, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (indexPath.row == itemIndex) {
+                    isItemVisible = YES;
+                    *stop = YES;
+                }
+            }];
+            if (isItemVisible) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.delegate didUpdatePhotoAtIndex:i];
                 });

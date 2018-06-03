@@ -25,8 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) NSArray<PhotoViewModel *> *photoViewModels;
 
 - (void)updatePhotos;
-- (void)didChangeScrollPositionWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes;
-- (void)didFinishScrollWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes;
+- (void)updateWithVisibleIndexes:(NSArray<NSIndexPath *> *)indexes;
+- (void)handleScrollFinished;
 - (NSArray<NSIndexPath *> *)removePhotosWithLettersBOrD;
 - (void)reoderPhotos;
 
