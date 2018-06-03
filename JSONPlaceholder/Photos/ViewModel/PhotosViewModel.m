@@ -175,7 +175,7 @@
     __block BOOL isItemVisible = NO;
     NSUInteger itemIndex = [self.albumModels indexOfObject:albumModel];
     [self.visibleIndexPaths enumerateObjectsUsingBlock:^(NSIndexPath * _Nonnull indexPath, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (indexPath.row == itemIndex) {
+        if (indexPath.row == itemIndex || ABS(indexPath.row - itemIndex) == 1) {
             isItemVisible = YES;
             *stop = YES;
         }
